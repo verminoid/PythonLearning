@@ -32,6 +32,8 @@ class Client:
         self._host = host
         self._port = port
         self._timeout = timeout
+        # TODO создать соединение здесь
+                # создать удаление с закрытием сокета
 
     def put(self, key, value, timestamp=None):
         with socket.create_connection((self._host, self._port),self._timeout) as sock:
