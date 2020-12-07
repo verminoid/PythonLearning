@@ -4,6 +4,25 @@ import time
 class ClientError(Exception):
     pass
 
+def ParcerGet(data):
+    parced_dict = dict()
+    for line in data.split("\n"):
+        if line == "ok":
+            continue
+        elif line is None:
+            break
+        str = line.split(" ")
+        temp = parced_dict.get(str[0])
+        if temp in None:
+            parced_dict.update(str[0],tuple(int(str[2]),float(str[1])))
+        else:
+            parced_dict[str[0]] = temp.append(tuple(int(str[2]),float(str[1])))
+    for item in parced_dict:
+        item.sort()
+    return parced_dict
+
+    
+
 class Client:
     """
     Client for put and get metrics
@@ -21,12 +40,20 @@ class Client:
                     timestamp = int(time.time())
                 sock.sendall(("put {} {} {}\n".format(key, value, timestamp)).encode("utf8"))
                 ansver = sock.recv(1024).decode("utf8")
+                if "ok\n\n" not in ansver:
+                    raise ClientError
             except socket.error:
                 raise ClientError
-            if "ok\n\n" not in ansver:
-                raise ClientError
+            
 
 
     def get(self, key):
-        pass
-        return None
+        
+        with socket.create_connection((self._host, self._port),self._timeout) as sock:
+            sock.sendall("get {}\n".format(key).encode("utf8"))
+            ansver = sock.recv(1024).decode("utf8")
+            if "ok\n" in ansver:
+                return ParcerGet(ansver)
+            else:
+                raise ClientError
+        
