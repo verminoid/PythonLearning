@@ -1,5 +1,12 @@
 import asyncio
+from collections import defaultdict
 
+def process_data(data):
+    if "put" in data:
+        quere = data.lstrip('put ').rstrip('\n')
+        quere = quere.split()
+        dict[quere[0]].append(float(quere[1]),int(quere[2]))
+    return 
 
 class ClientServerProtocol(asyncio.Protocol):
     def connection_made(self, transport):
@@ -9,20 +16,22 @@ class ClientServerProtocol(asyncio.Protocol):
         resp = process_data(data.decode())
         self.transport.write(resp.encode())
 
+def run_server(host,port):
+    
+    dict = defaultdict(list)
+    loop = asyncio.get_event_loop()
+    coro = loop.create_server(
+        ClientServerProtocol,
+        host, port
+    )
 
-loop = asyncio.get_event_loop()
-coro = loop.create_server(
-    ClientServerProtocol,
-    '127.0.0.1', 8181
-)
+    server = loop.run_until_complete(coro)
 
-server = loop.run_until_complete(coro)
+    try:
+        loop.run_forever()
+    except KeyboardInterrupt:
+        pass
 
-try:
-    loop.run_forever()
-except KeyboardInterrupt:
-    pass
-
-server.close()
-loop.run_until_complete(server.wait_closed())
-loop.close()
+    server.close()
+    loop.run_until_complete(server.wait_closed())
+    loop.close()
