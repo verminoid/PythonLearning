@@ -19,8 +19,17 @@ class AbstractLevel(yaml.YAMLObject):
     class Objects(ABC):
         pass
 
+    @classmethod
+    def from_yaml(cls, loader, node):
+        level_map = cls.get_map()
+        level_obj = cls.get_objects()
+        level_obj.config = loader.construct_mapping(node)
+        return {"map": level_map, "obj": level_obj}
+
 
 class EasyLevel(AbstractLevel):
+    yaml_tag = "!easy_level"
+
     class Map:
         def __init__(self):
             self.Map = [[0 for _ in range(5)] for _ in range(5)]
@@ -56,6 +65,8 @@ class EasyLevel(AbstractLevel):
 
 
 class MediumLevel(AbstractLevel):
+    yaml_tag = "!medium_level"
+
     class Map:
         def __init__(self):
             self.Map = [[0 for _ in range(8)] for _ in range(8)]
@@ -91,6 +102,8 @@ class MediumLevel(AbstractLevel):
 
 
 class HardLevel(AbstractLevel):
+    yaml_tag = "!hard_level"
+
     class Map:
         def __init__(self):
             self.Map = [[0 for _ in range(10)] for _ in range(10)]
@@ -130,7 +143,7 @@ class HardLevel(AbstractLevel):
             return self.objects
 
 if __name__ == "__main__":
-    vers = input("YAML? yes/no")
+    vers = input("YAML? yes/no\n")
     if vers == "no":
         Levels = {'levels':[]}
         _map = EasyLevel.Map()
@@ -146,6 +159,7 @@ if __name__ == "__main__":
         _obj = HardLevel.Objects()
         _obj.config = {'enemy': ['rat', 'snake', 'dragon'], 'enemy_count': 10}
         Levels['levels'].append({'map': _map, 'obj': _obj})
+        
     elif vers == "yes":
         Levels = yaml.load(
         '''
@@ -162,3 +176,7 @@ if __name__ == "__main__":
         ''')
     else:
         print ("Wrong input! yes or no!")
+
+    for level in Levels['levels']:
+            map = level['map'].get_map()
+            print(level['obj'].get_objects(map))

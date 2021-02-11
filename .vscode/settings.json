@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "d:\\python-3.9.0-embed-amd64\\python.exe",
+    "python.pythonPath": "C:\\Users\\IV\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
     "python.formatting.provider": "autopep8",
