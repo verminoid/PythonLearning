@@ -72,14 +72,13 @@ def add_gold(engine, hero):
         engine.notify(f"{gold} gold added")
 
 
-class MapFactory(yaml.YAMLObject):
+class MapFactory(yaml.YAMLObject): 
 
     @classmethod
-    def from_yaml(cls, loader, node):
-
-        # FIXME
-        # get _map and _obj
-
+    def from_yaml(cls, loader, node): # check, may by wrong
+        _map = cls.Map()
+        _obj = cls.Objects()
+        _obj.objects = loader.construct_mapping(node)
         return {'map': _map, 'obj': _obj}
 
 
@@ -206,6 +205,41 @@ class RandomMap(MapFactory):
 
             return self.objects
 
+
+class EmptyMap(MapFactory): # FIXME 
+    yaml_tag = "!empty_map"
+
+    class Map:
+        def __init__(self):
+            self.Map = []
+                     
+        def get_map(self):
+            return self.Map
+
+    class Objects:
+        def __init__(self):
+            self.objects = []
+
+        def get_objects(self, _map):
+            return self.objects
+
+
+class SpecialMap(MapFactory): # FIXME 
+    yaml_tag = "!special_map"
+
+    class Map:
+        def __init__(self):
+            self.Map = []
+                     
+        def get_map(self):
+            return self.Map
+
+    class Objects:
+        def __init__(self):
+            self.objects = []
+
+        def get_objects(self, _map):
+            return self.objects
 
 # FIXME
 # add classes for YAML !empty_map and !special_map{}

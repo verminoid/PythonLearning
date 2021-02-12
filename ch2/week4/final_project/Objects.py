@@ -18,6 +18,14 @@ class Interactive(ABC):
         pass
 
 
+class AbstractObject(ABC): # FIXME
+    def __init__(self):
+        pass
+
+    def draw(self, display): # Abstract?
+        pass
+
+
 class Ally(AbstractObject, Interactive):
 
     def __init__(self, icon, action, position):
