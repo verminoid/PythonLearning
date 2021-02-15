@@ -49,6 +49,15 @@ class Creature(AbstractObject):
     def calc_max_HP(self):
         self.max_hp = 5 + self.stats["endurance"] * 2
 
+class Enemy(Creature, Interactive):
+    def __init__(self, icon, stats, xp, position):
+        self.icon = icon
+        self.stats = stats
+        self.xp = xp
+        self.position = position
+
+    def interact(self, engine, hero):
+        self.xp(engine, hero)
 
 class Hero(Creature):
 
@@ -69,12 +78,13 @@ class Hero(Creature):
             self.hp = self.max_hp
 
 
-class Effect(Hero):
+class Effect(Hero, ABC):
 
     def __init__(self, base):
         self.base = base
         self.stats = self.base.stats.copy()
         self.apply_effect()
+        # добавить супер?
 
     @property
     def position(self):
@@ -133,5 +143,36 @@ class Effect(Hero):
         pass
 
 
+class Berserk(Effect): #????
+    
+    def apply_effect(self):
+        stats, hp = self.base.apply_effect()
+        stats["strength"] += 3
+        stats["endurance"] += 2
+        stats["luck"] -= 1
+        stats["intelligence"] -= 3
+        hp += 20
+        return stats, hp
+        
+class Blessing(Effect): #????
+    
+    def apply_effect(self):
+        stats, hp = self.base.apply_effect()
+        stats["strength"] += 2
+        stats["endurance"] += 2
+        stats["luck"] += 2
+        stats["intelligence"] += 2
+        return stats, hp
+        
+class Weakness(Effect): #????
+    
+    def apply_effect(self):
+        stats, hp = self.base.apply_effect()
+        stats["strength"] -= 2
+        stats["endurance"] -= 2
+        stats["luck"] -= 2
+        stats["intelligence"] -= 2
+        return stats, hp
+        
+
 # FIXME
-# add classes

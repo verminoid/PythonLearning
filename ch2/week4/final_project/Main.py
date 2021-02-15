@@ -24,10 +24,12 @@ base_stats = {
     "luck": 5
 }
 
+hero, engine, drawer = [0],[0],[0]
 
 def create_game(sprite_size, is_new):
     global hero, engine, drawer, iteration
     if is_new:
+        
         hero = Objects.Hero(base_stats, Service.create_sprite(
             os.path.join("texture", "Hero.png"), sprite_size))
         engine = Logic.GameEngine()
@@ -42,6 +44,7 @@ def create_game(sprite_size, is_new):
                                                                                ))))
 
     else:
+        
         engine.sprite_size = sprite_size
         hero.sprite = Service.create_sprite(
             os.path.join("texture", "Hero.png"), sprite_size)
@@ -91,7 +94,7 @@ while engine.working:
                         iteration += 1
                 else:
                     if event.key == pygame.K_RETURN:
-                        create_game()
+                        create_game() # FIXME not have args
     else:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -112,7 +115,7 @@ while engine.working:
         else:
             create_game()
 
-    gameDisplay.blit(drawer, (0, 0))
+    gameDisplay.blit(drawer, (10, 10))
     drawer.draw(gameDisplay)
 
     pygame.display.update()
