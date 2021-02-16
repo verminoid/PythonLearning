@@ -2,6 +2,7 @@ import pygame
 import random
 import yaml
 import os
+from abc import ABC
 
 from yaml.loader import FullLoader
 import Objects
@@ -25,7 +26,7 @@ def reload_game(engine, hero):
     engine.level += 1
     hero.position = [1, 1]
     engine.objects = []
-    generator = level_list[1]# level_list[min(engine.level, level_list_max)]
+    generator = level_list[min(engine.level, level_list_max)]
     _map = generator['map'].get_map()
     engine.load_map(_map)
     engine.add_objects(generator['obj'].get_objects(_map))
@@ -78,10 +79,24 @@ class MapFactory(yaml.YAMLObject):
 
     @classmethod
     def from_yaml(cls, loader, node): # check, may by wrong
-        _map = cls.Map()
-        _obj = cls.Objects()
-        _obj.objects = loader.construct_mapping(node)
+        _map = cls.get_map()
+        _obj = cls.get_object()
+        _obj.config = loader.construct_mapping(node)
         return {'map': _map, 'obj': _obj}
+
+    @classmethod
+    def get_map(cls):
+        return cls.Map()
+
+    @classmethod
+    def get_object(cls):
+        return cls.Objects()
+
+    class Map(ABC):
+        pass
+
+    class Objects(ABC):
+        pass
 
 
 class EndMap(MapFactory):
@@ -214,7 +229,13 @@ class EmptyMap(MapFactory): # FIXME
 
     class Map:
         def __init__(self):
-            self.Map = []
+            self.Map = [[0 for _ in range(41)] for _ in range(41)]
+            for i in range(41):
+                for j in range(41):
+                    if i == 0 or j == 0 or i == 40 or j == 40:
+                        self.Map[j][i] = wall
+                    else:
+                        self.Map[j][i] = floor1
                      
         def get_map(self):
             return self.Map
@@ -387,7 +408,7 @@ floor1 = [0]
 floor2 = [0]
 floor3 = [0]
 
-object_list_prob = dict()
+object_list_prob = list()
 level_list = list()
 
 def service_init(sprite_size, full=True):

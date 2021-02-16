@@ -48,20 +48,23 @@ class GameSurface(ScreenHandle):
     def draw_hero(self):
         self.game_engine.hero.draw(self)
 
-    def draw_map(self):
+    def calculate(self):# FIXME расчитать сдвиги
+        min_x = 0 # self.game_engine.hero.position[0]-5
+        min_y = 0 # self.game_engine.hero.position[1]-5
+        return min_x, min_y
 
+    def draw_map(self):
+        
         # FIXME || calculate (min_x,min_y) - left top corner
 
-        min_x = 0
-        min_y = 0
+        min_x, min_y = self.calculate()
 
     ##
 
         if self.game_engine.map:
             for i in range(len(self.game_engine.map[0]) - min_x):
                 for j in range(len(self.game_engine.map) - min_y):
-                    self.blit(self.game_engine.map[min_y + j][min_x + i][
-                              0], (i * self.game_engine.sprite_size, j * self.game_engine.sprite_size))
+                    self.blit(self.game_engine.map[min_y + j][min_x + i][0], (i * self.game_engine.sprite_size, j * self.game_engine.sprite_size))
         else:
             self.fill(colors["white"])
 
@@ -69,9 +72,7 @@ class GameSurface(ScreenHandle):
         size = self.game_engine.sprite_size
     # FIXME || calculate (min_x,min_y) - left top corner
 
-        min_x = 0
-        min_y = 0
-
+        min_x, min_y = self.calculate()
     ##
         self.blit(sprite, ((coord[0] - min_x) * self.game_engine.sprite_size,
                            (coord[1] - min_y) * self.game_engine.sprite_size))
@@ -80,9 +81,7 @@ class GameSurface(ScreenHandle):
         size = self.game_engine.sprite_size
     # FIXME || calculate (min_x,min_y) - left top corner
 
-        min_x = 0
-        min_y = 0
-
+        min_x, min_y = self.calculate()
     ##
         self.draw_map()
         for obj in self.game_engine.objects:
@@ -91,6 +90,7 @@ class GameSurface(ScreenHandle):
         self.draw_hero()
 
         if self.successor is not None:
+            canvas.blit(self.successor, self.next_coord)
             self.successor.draw(canvas)
     # draw next surface in chain
 
@@ -160,6 +160,7 @@ class ProgressBar(ScreenHandle):
                   (550, 70))
 
         if self.successor is not None:
+            canvas.blit(self.successor, self.next_coord)
             self.successor.draw(canvas)
     # draw next surface in chain
 
@@ -185,6 +186,7 @@ class InfoWindow(ScreenHandle):
                       (5, 20 + 18 * i))
 
         if self.successor is not None:
+            canvas.blit(self.successor, self.next_coord)
             self.successor.draw(canvas)
     # FIXME
     # draw next surface in chain

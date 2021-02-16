@@ -57,7 +57,7 @@ def create_game(sprite_size, is_new):
     iteration = 0
 
 
-size = 60
+size = 11
 create_game(size, True)
 
 while engine.working:
@@ -115,7 +115,7 @@ while engine.working:
         else:
             create_game()
 
-    gameDisplay.blit(drawer, (10, 10))
+    gameDisplay.blit(drawer, (0, 0))
     drawer.draw(gameDisplay)
 
     pygame.display.update()

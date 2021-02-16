@@ -19,11 +19,15 @@ class Interactive(ABC):
 
 
 class AbstractObject(ABC): # FIXME
+    @abstractmethod
     def __init__(self):
-        pass
+        self.sprite = None
+        self.position = None
+        self.min_x = self.min_y = 0
 
-    def draw(self, display): # Abstract?
-        pass
+    def draw(self, display): # test расчитать сдвиги картинки
+        sprite_size = self.sprite.get_size()[0]
+        display.blit(self.sprite, [(self.position[0])* sprite_size, (self.position[1])* sprite_size])
 
 
 class Ally(AbstractObject, Interactive):
@@ -51,13 +55,21 @@ class Creature(AbstractObject):
 
 class Enemy(Creature, Interactive):
     def __init__(self, icon, stats, xp, position):
-        self.icon = icon
+        self.sprite = icon
         self.stats = stats
         self.xp = xp
         self.position = position
 
     def interact(self, engine, hero):
-        self.xp(engine, hero)
+        hero.exp += self.xp
+        #engine.delete_object()
+        while hero.exp >= 100 * (2 ** (hero.level - 1)):
+            engine.notify ("level up!")
+            hero.level += 1
+            hero.stats["strength"] += 2
+            hero.stats["endurance"] += 2
+            hero.calc_max_HP()
+            hero.hp = hero.max_hp
 
 class Hero(Creature):
 
@@ -68,14 +80,8 @@ class Hero(Creature):
         self.gold = 0
         super().__init__(icon, stats, pos)
 
-    def level_up(self):
-        while self.exp >= 100 * (2 ** (self.level - 1)):
-            yield "level up!"
-            self.level += 1
-            self.stats["strength"] += 2
-            self.stats["endurance"] += 2
-            self.calc_max_HP()
-            self.hp = self.max_hp
+    
+        
 
 
 class Effect(Hero, ABC):
