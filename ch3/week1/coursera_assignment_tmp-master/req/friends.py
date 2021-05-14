@@ -44,5 +44,5 @@ def calc_age(uid):
 
 
 if __name__ == '__main__':
-    res = calc_age('verminoid')
+    res = calc_age("verminoid")
     print(res)
