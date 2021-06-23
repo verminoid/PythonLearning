@@ -1,0 +1,136 @@
+Часть 2:
+В этом задании продолжаем работать со страницами из wikipedia. Необходимо реализовать механизм сбора статистики по нескольким страницам. Сложность задачи состоит в том, что сначала нужно будет определить страницы, с которых необходимо собирать статистику. В качестве входных данных служат названия двух статей(страниц). Гарантируется, что файлы обеих статей есть в папке wiki и из первой статьи можно попасть в последнюю, переходя по ссылкам только на те статьи, копии которых есть в папке wiki.
+
+Например, на вход подаются страницы: Stone_Age и Python_(programming_language). В статье Stone_Age есть ссылка на Brain, в ней на Artificial_intelligence, а в ней на Python_(programming_language) и это кратчайший путь от Stone_Age до Python_(programming_language). Ваша задача — найти самый короткий путь (гарантируется, что существует только один путь минимальной длины), а затем с помощью функции parse из предыдущего задания собрать статистику по всем статьям в найденном пути. 
+
+Результат нужно вернуть в виде словаря, ключами которого являются имена статей, а значениями списки со статистикой. Для нашего примера правильный результат будет : 
+{ 'Stone_Age': [13, 10, 12, 40], 
+  'Brain': [19, 5, 25, 11], 
+  'Artificial_intelligence': [8, 19, 13, 198], 
+  'Python_(programming_language)': [2, 5, 17, 41] 
+}
+Вам необходимо реализовать две функции:  build_bridge и get_statistics.   
+def build_bridge(path, start_page, end_page):
+    """возвращает список страниц, по которым можно перейти по ссылкам со start_page на
+    end_page, начальная и конечная страницы включаются в результирующий список"""
+
+    # напишите вашу реализацию логики по вычисления кратчайшего пути здесь
+
+
+def get_statistics(path, start_page, end_page):
+    """собирает статистику со страниц, возвращает словарь, где ключ - название страницы,
+    значение - список со статистикой страницы"""
+
+    # получаем список страниц, с которых необходимо собрать статистику 
+    pages = build_bridge(path, start_page, end_page)
+    # напишите вашу реализацию логики по сбору статистики здесь
+
+    return statistic
+
+Обе функции принимают на вход три параметра:path - путь до директории с сохраненными файлами из wikipedia,start_page - название начальной страницы,end_page - название конечной страницы.
+
+Функция build_bridge вычисляет кратчайший путь и возвращает список страниц в том порядке, в котором происходят переходы. Начальная и конечная страницы включаются в результирующий список. В случае, если название стартовой и конечной страницы совпадают, то результирующий список должен содержать только стартовую страницу. Получить все ссылки на странице можно разными способами, в том числе и с помощью регулярных выражений, например так:  
+
+with open(os.path.join(path, page), encoding="utf-8") as file:
+    links = re.findall(r"(?<=/wiki/)[\w()]+", file.read())
+
+Обратите внимание, что что на страницах wikipedia могут встречаться ссылки на страницы, которых нет в директории wiki, такие ссылки должны игнорироваться. 
+
+Пример работы функции build_bridge:
+
+>>> result = build_bridge('wiki/', 'The_New_York_Times', 'Stone_Age')
+>>> print(result)
+['The_New_York_Times', 'London', 'Woolwich', 'Iron_Age', 'Stone_Age']
+
+Функция get_statistics использует функцию parse и собирает статистику по страницам, найденным с помощью функции build_bridge. Пример работы функции get_statistics: 
+
+>>> from pprint import pprint
+>>> result = get_statistics('wiki/', 'The_New_York_Times', "Binyamina_train_station_suicide_bombing")
+>>> pprint(result)
+{'Binyamina_train_station_suicide_bombing': [1, 3, 6, 21],
+ 'Haifa_bus_16_suicide_bombing': [1, 4, 15, 23],
+ 'Second_Intifada': [9, 13, 14, 84],
+ 'The_New_York_Times': [5, 9, 8, 42]}
+
+ Вы можете использовать для проверки вашего решения тесты:  
+
+ # Набор тестов для проверки студентами решений по заданию "Практическое задание
+# по Beautiful Soup - 2". По умолчанию файл с решением называется solution.py,
+# измените в импорте название модуля solution, если файл с решением имеет другое имя.
+
+import unittest
+
+from solution import build_bridge, get_statistics
+
+STATISTICS = {
+    'Artificial_intelligence': [8, 19, 13, 198],
+    'Binyamina_train_station_suicide_bombing': [1, 3, 6, 21],
+    'Brain': [19, 5, 25, 11],
+    'Haifa_bus_16_suicide_bombing': [1, 4, 15, 23],
+    'Hidamari_no_Ki': [1, 5, 5, 35],
+    'IBM': [13, 3, 21, 33],
+    'Iron_Age': [4, 8, 15, 22],
+    'London': [53, 16, 31, 125],
+    'Mei_Kurokawa': [1, 1, 2, 7],
+    'PlayStation_3': [13, 5, 14, 148],
+    'Python_(programming_language)': [2, 5, 17, 41],
+    'Second_Intifada': [9, 13, 14, 84],
+    'Stone_Age': [13, 10, 12, 40],
+    'The_New_York_Times': [5, 9, 8, 42],
+    'Wild_Arms_(video_game)': [3, 3, 10, 27],
+    'Woolwich': [15, 9, 19, 38]}
+
+TESTCASES = (
+    ('wiki/', 'Stone_Age', 'Python_(programming_language)',
+     ['Stone_Age', 'Brain', 'Artificial_intelligence', 'Python_(programming_language)']),
+
+    ('wiki/', 'The_New_York_Times', 'Stone_Age',
+     ['The_New_York_Times', 'London', 'Woolwich', 'Iron_Age', 'Stone_Age']),
+
+    ('wiki/', 'Artificial_intelligence', 'Mei_Kurokawa',
+     ['Artificial_intelligence', 'IBM', 'PlayStation_3', 'Wild_Arms_(video_game)',
+      'Hidamari_no_Ki', 'Mei_Kurokawa']),
+
+    ('wiki/', 'The_New_York_Times', "Binyamina_train_station_suicide_bombing",
+     ['The_New_York_Times', 'Second_Intifada', 'Haifa_bus_16_suicide_bombing',
+      'Binyamina_train_station_suicide_bombing']),
+
+    ('wiki/', 'Stone_Age', 'Stone_Age',
+     ['Stone_Age', ]),
+)
+
+
+class TestBuildBrige(unittest.TestCase):
+    def test_build_bridge(self):
+        for path, start_page, end_page, expected in TESTCASES:
+            with self.subTest(path=path,
+                              start_page=start_page,
+                              end_page=end_page,
+                              expected=expected):
+                result = build_bridge(path, start_page, end_page)
+                self.assertEqual(result, expected)
+
+
+class TestGetStatistics(unittest.TestCase):
+    def test_build_bridge(self):
+        for path, start_page, end_page, expected in TESTCASES:
+            with self.subTest(path=path,
+                              start_page=start_page,
+                              end_page=end_page,
+                              expected=expected):
+                result = get_statistics(path, start_page, end_page)
+                self.assertEqual(result, {page: STATISTICS[page] for page in expected})
+
+
+if __name__ == '__main__':
+    unittest.main()
+
+    Ваше решение должно содержать реализацию функций get_statistics, build_bridge и parse. Вы можете дополнительно объявить в коде другие функции, если этого требует логика вашего решения. 
+
+Как и в предыдущем задании, тестовая система будет проверять ваш код как на страницах приложенных к описанию, так и на другом наборе станиц wikipedia. Решение должно выполняться за приемлемое время. Мы понимаем, что рассмотрение алгоритма решения не входит в программу курса, поэтому предлагаем вам ознакомиться с этой темой самостоятельно. 
+
+Полезные ссылки:
+
+Реализация графов и деревьев на Python
+
+Реализации алгоритмов/Поиск в ширину

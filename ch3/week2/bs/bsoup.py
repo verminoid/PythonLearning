@@ -30,9 +30,15 @@ def parse(path_to_file):
         if tag.name is not None:
             if tag.name == "a":
                 count += 1
-            else:
+                for sib in tag.next_siblings:
+                    if sib.name is not None:
+                        if sib.name == "a":
+                            count += 1
+                        else:
+                            links.append(count)
+                            count = 0
                 links.append(count)
-                count = 0
+                count = 0            
     linkslen = max(links)
 
     count = 0
