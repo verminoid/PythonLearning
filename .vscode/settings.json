@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "C:\\Users\\IV\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
+    "python.pythonPath": "ch3\\week4\\coursera_assignment_tmp-master\\enviroment\\Scripts\\python.exe",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
     "python.formatting.provider": "autopep8",
