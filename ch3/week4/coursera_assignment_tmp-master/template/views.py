@@ -4,7 +4,12 @@ from django.shortcuts import render
 # Create your views here.
 
 def echo(request):
-    pass
+    context = {
+        'get': request.GET,
+        'post': request.POST,
+        'meta': request.META
+    }
+    return render(request, 'echo.html', context=context)
 
 
 def filters(request):
