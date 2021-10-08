@@ -1,7 +1,9 @@
+""" views module """
 from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 
 def simple_route(request):
+    """ module """
     response = HttpResponse()
     if request.method != 'GET':
         response.status_code = 405
@@ -12,6 +14,7 @@ def simple_route(request):
     return response
 
 def slug_route(request):
+    """ module """
     response = HttpResponse()
     body = request.path.split("/")[3]
     response.status_code = 200
@@ -20,6 +23,7 @@ def slug_route(request):
     return response
 
 def sum_route(request):
+    """ module """
     response = HttpResponse()
     body = request.path.split("/")
     sum = int(body[3])+int(body[4])
@@ -29,6 +33,7 @@ def sum_route(request):
     return response
 
 def isint(s):
+    """ module """
     try:
         int(s)
         return True
@@ -37,6 +42,7 @@ def isint(s):
 
 @require_http_methods(["GET"])
 def sum_get_method(request):
+    """ module """
     response = HttpResponse()
     try:
         a = request.GET["a"]
@@ -55,6 +61,7 @@ def sum_get_method(request):
 
 @require_http_methods(["POST"])
 def sum_post_method(request):
+    """ module """
     response = HttpResponse()
     try:
         a = request.POST["a"]
